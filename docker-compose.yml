@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+    postgres12:
+        image: postgres:12.3
+        ports:
+          - 5961:5432
+        volumes:
+          - db-data:/var/lib/postgresql/data
+        networks:
+          - backend-net
+        environment: 
+          - POSTGRES_PASSWORD=123456
+
+    redis:
+        image: "redis:alpine"
+        
+        command: redis-server --requirepass sOmE_sEcUrE_pAsS
+        ports:
+            - "6379:6379"
+        volumes:
+            - $PWD/redis-data:/var/lib/redis
+            - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+        
+        environment:
+             - REDIS_REPLICATION_MODE=master
+        
+        networks:
+              backend-net:
+volumes:
+    db-data:
+
+networks:
+    backend-net:
+        driver: bridge
